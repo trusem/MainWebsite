@@ -1,0 +1,189 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const params = new URL(Astro.request.url).searchParams;
+const selectedPlan = params.get('plan');
+const planPrice = params.get('price');
+
+// Format the plan name and price for display
+const formattedPlan = selectedPlan ? selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1) : '';
+---
+
+<Layout title="Payment - Faithful Field">
+    <main class="flex-auto">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-2xl">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
+                    Complete Your Purchase
+                </h1>
+
+                {selectedPlan && (
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900">Order Summary</h2>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-gray-600">{formattedPlan} Plan</span>
+                            <span class="text-lg font-medium text-indigo-600">{planPrice}</span>
+                        </div>
+                    </div>
+                )}
+
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <form id="payment-form">
+                        <div id="payment-element">
+                            <!-- Stripe Elements will mount here -->
+                        </div>
+                        <div id="payment-message" class="mt-4 text-red-600 hidden"></div>
+                        <div class="flex gap-4 mt-6">
+                            <button
+                                id="submit-payment"
+                                class="flex-1 py-2 px-4 border rounded-md bg-indigo-600 text-white hover:bg-indigo-500 disabled:opacity-50"
+                            >
+                                <span id="button-text">Pay Now</span>
+                                <div id="spinner" class="hidden">
+                                    <div class="spinner"></div>
+                                </div>
+                            </button>
+                            <a 
+                                href="/"
+                                class="flex-1 text-center py-2 px-4 border rounded-md bg-white text-gray-900 hover:bg-gray-50 ring-1 ring-inset ring-gray-300"
+                            >
+                                Back to Home
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    #spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<!-- Load Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script define:vars={{ selectedPlan }}>
+    // Initialize Stripe
+    const stripe = Stripe(import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY);
+    let elements;
+
+    // Start the payment flow
+    initialize();
+
+    async function initialize() {
+        try {
+            // Create PaymentIntent on the server
+            const response = await fetch("/api/create-payment-intent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan: selectedPlan })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create payment intent');
+            }
+
+            const { clientSecret } = await response.json();
+
+            // Customize appearance
+            const appearance = {
+                theme: 'stripe',
+                variables: {
+                    colorPrimary: '#4F46E5',
+                    colorBackground: '#ffffff',
+                    colorText: '#1f2937',
+                    colorDanger: '#ef4444',
+                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                    spacingUnit: '4px',
+                    borderRadius: '8px',
+                },
+            };
+
+            // Initialize Stripe Elements
+            elements = stripe.elements({
+                appearance,
+                clientSecret,
+            });
+
+            // Create and mount the Payment Element
+            const paymentElement = elements.create('payment');
+            paymentElement.mount('#payment-element');
+
+            // Show any errors that occur during initialization
+            paymentElement.on('loaderror', (event) => {
+                showMessage(event.error.message);
+            });
+
+        } catch (error) {
+            console.error('Initialization error:', error);
+            showMessage("Failed to initialize payment form. Please try again.");
+        }
+    }
+
+    // Handle form submission
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        setLoading(true);
+
+        try {
+            const { error } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: `${window.location.origin}/payment-success`,
+                }
+            });
+
+            if (error) {
+                showMessage(error.message);
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            showMessage("An unexpected error occurred.");
+        }
+
+        setLoading(false);
+    });
+
+    function showMessage(messageText) {
+        const messageContainer = document.querySelector("#payment-message");
+        messageContainer.classList.remove("hidden");
+        messageContainer.textContent = messageText;
+
+        setTimeout(() => {
+            messageContainer.classList.add("hidden");
+            messageContainer.textContent = "";
+        }, 4000);
+    }
+
+    function setLoading(isLoading) {
+        const submitButton = document.querySelector("#submit-payment");
+        const spinner = document.querySelector("#spinner");
+        const buttonText = document.querySelector("#button-text");
+
+        if (isLoading) {
+            submitButton.disabled = true;
+            spinner.classList.remove("hidden");
+            buttonText.classList.add("hidden");
+        } else {
+            submitButton.disabled = false;
+            spinner.classList.add("hidden");
+            buttonText.classList.remove("hidden");
+        }
+    }
+</script> 

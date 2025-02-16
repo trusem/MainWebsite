@@ -1,0 +1,78 @@
+---
+interface TabItem {
+    id: string;
+    title: string;
+    description: string;
+    image: ImageMetadata;
+}
+
+interface Props {
+    items: TabItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="relative grid grid-cols-12 gap-8 pt-20">
+    <!-- Vertical Tabs -->
+    <div class="col-span-4 flex flex-col gap-4">
+        {items.map((item, index) => (
+            <button
+                class:list={[
+                    "tab-btn text-left px-6 py-4 rounded-lg transition-colors duration-200 focus:outline-none text-white",
+                    "hover:bg-white/20",
+                    "bg-white/10",
+                    index === 0 && "bg-white/20 border-l-4 border-white"
+                ]}
+                data-tab={index + 1}
+            >
+                <h3 class="font-display text-xl tracking-tight">{item.title}</h3>
+                <p class="mt-2 text-sm">{item.description}</p>
+            </button>
+        ))}
+    </div>
+
+    <!-- Tab Content -->
+    <div class="col-span-8">
+        {items.map((item, index) => (
+            <div 
+                class:list={[
+                    index === 0 ? "block" : "hidden",
+                    "tab-content"
+                ]} 
+                data-tab={index + 1}
+            >
+                <img src={item.image.src} alt={item.title} class="w-full rounded-lg shadow-xl">
+            </div>
+        ))}
+    </div>
+</div>
+
+<script>
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            
+            // Remove active classes from all buttons
+            tabButtons.forEach(btn => {
+                btn.classList.remove('bg-white/20', 'border-l-4', 'border-white');
+                btn.classList.add('bg-white/10');
+            });
+            
+            // Hide all contents
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+            
+            // Add active classes to clicked button and show content
+            button.classList.remove('bg-white/10');
+            button.classList.add('bg-white/20', 'border-l-4', 'border-white');
+            document.querySelector(`.tab-content[data-tab="${tabId}"]`).classList.remove('hidden');
+            document.querySelector(`.tab-content[data-tab="${tabId}"]`).classList.add('block');
+        });
+    });
+</script> 

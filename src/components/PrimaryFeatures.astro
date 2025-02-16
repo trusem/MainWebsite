@@ -1,0 +1,51 @@
+---
+import { Picture } from 'astro:assets';
+import BackgroundImg from '../assets/background-features.jpg';
+import Container from './Container.astro';
+import Tab from './Tab.astro';
+import expenses from '../assets/expenses.png';
+import reporting from '../assets/reporting.png';
+import payroll from '../assets/payroll.png';
+
+const tabItems = [
+    {
+        id: "expenses",
+        title: "Expenses",
+        description: "Manage your business expenses efficiently",
+        image: expenses
+    },
+    {
+        id: "reporting",
+        title: "Reporting",
+        description: "Detailed insights and analytics",
+        image: reporting
+    },
+    {
+        id: "payroll",
+        title: "Payroll",
+        description: "Simplified payroll management",
+        image: payroll
+    }
+];
+---
+
+<section aria-label="Features for running campaigns" class="relative overflow-hidden pt-20 pb-28 sm:py-32">
+    <img 
+        src={BackgroundImg.src} 
+        alt="background" 
+        class="absolute left-0 top-0 w-full h-full object-cover opacity-50 -z-10"
+    />
+    <div class="absolute inset-0 bg-blue-600/75 mix-blend-multiply -z-10"></div>
+    
+    <Container className="relative z-10">
+        <div class="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
+            <h2 class="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
+                Everything you need to run your marketing.
+            </h2>
+            <p class="mt-6 text-lg tracking-tight text-blue-100">
+                Well almost everything but contact us if you need custom services for your marketing needs.
+            </p>
+        </div>
+        <Tab items={tabItems} />
+    </Container>
+</section>

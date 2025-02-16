@@ -1,0 +1,89 @@
+---
+interface Testimonial {
+    content: string;
+    author: string;
+    role: string;
+    company: string;
+}
+
+const testimonials: Testimonial[] = [
+    {
+        content: "This software has transformed how we handle our marketing campaigns. The automation features are incredible.",
+        author: "Sarah Johnson",
+        role: "Marketing Director",
+        company: "TechCorp Inc."
+    },
+    {
+        content: "The analytics and reporting features have given us insights we never had before. It's been a game-changer.",
+        author: "Michael Chen",
+        role: "CEO",
+        company: "Digital Solutions"
+    },
+    {
+        content: "Implementation was smooth, and the support team is fantastic. We've seen a 40% increase in efficiency.",
+        author: "Emma Rodriguez",
+        role: "Operations Manager",
+        company: "Growth Dynamics"
+    },
+    {
+        content: "The platform's flexibility and scalability have allowed us to grow without any technical limitations.",
+        author: "David Kim",
+        role: "CTO",
+        company: "Innovation Labs"
+    },
+    {
+        content: "Their marketing solutions have helped us reach new audiences we never thought possible.",
+        author: "Lisa Thompson",
+        role: "Brand Manager",
+        company: "Global Brands"
+    },
+    {
+        content: "The ROI we've seen since implementing this platform has exceeded all our expectations.",
+        author: "James Wilson",
+        role: "Finance Director",
+        company: "Strategic Finance"
+    },
+    {
+        content: "Customer engagement has improved dramatically since we started using their marketing tools.",
+        author: "Ana Martinez",
+        role: "Customer Success",
+        company: "Engage Digital"
+    },
+    {
+        content: "The integrated analytics have revolutionized how we approach our marketing strategies.",
+        author: "Robert Chang",
+        role: "Marketing Strategist",
+        company: "Future Marketing"
+    }
+];
+---
+
+<section class="py-24 bg-white">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-xl text-center">
+            <h2 class="text-base font-semibold leading-7 text-indigo-600">Testimonials</h2>
+            <p class="mt-2 font-display text-3xl tracking-tight text-gray-900 sm:text-4xl">
+                Trusted by companies worldwide
+            </p>
+        </div>
+        <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 text-sm leading-6 sm:mt-20 sm:grid-cols-2 lg:grid-cols-3 xl:mx-0 xl:max-w-none xl:grid-cols-4">
+            {testimonials.map((testimonial) => (
+                <div class="relative flex flex-col gap-6 rounded-2xl bg-gray-50 p-6 shadow-md ring-1 ring-gray-200 hover:-translate-y-1 transition-transform duration-300">
+                    <div class="flex flex-1 flex-col justify-between">
+                        <div class="flex-1">
+                            <svg class="h-8 w-8 text-indigo-600 mb-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"/>
+                            </svg>
+                            <p class="text-base text-gray-600">{testimonial.content}</p>
+                        </div>
+                        <div class="mt-6 border-t border-gray-900/5 pt-6">
+                            <div class="font-display text-base font-semibold text-gray-900">{testimonial.author}</div>
+                            <div class="text-sm text-gray-600">{testimonial.role}</div>
+                            <div class="text-sm text-indigo-600">{testimonial.company}</div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section> 

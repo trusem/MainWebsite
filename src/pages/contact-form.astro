@@ -1,0 +1,110 @@
+---
+import Layout from '../layouts/Layout.astro'
+
+const params = new URL(Astro.request.url).searchParams;
+const selectedPlan = params.get('plan');
+const planPrice = params.get('price');
+
+// Format the plan name and price for display
+const formattedPlan = selectedPlan ? selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1) : '';
+---
+
+<Layout title="Contact Us - Faithful Field">
+    <main class="flex-auto">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-2xl">
+                <div class="space-y-4">
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                        Almost there!
+                    </h1>
+                    {selectedPlan && (
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-900">Selected Plan</h2>
+                            <div class="mt-2 flex justify-between items-center">
+                                <span class="text-gray-600">{formattedPlan} Plan</span>
+                                <span class="text-lg font-medium text-indigo-600">{planPrice}</span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <form class="mt-8 space-y-6" id="contactForm">
+                    <div>
+                        <label for="name" class="block text-sm font-medium leading-6 text-gray-900">
+                            Full Name
+                        </label>
+                        <div class="mt-2">
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium leading-6 text-gray-900">
+                            Email Address
+                        </label>
+                        <div class="mt-2">
+                            <input
+                                type="email"
+                                name="email"
+                                id="email"
+                                required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">
+                            Phone Number
+                        </label>
+                        <div class="mt-2">
+                            <input
+                                type="tel"
+                                name="phone"
+                                id="phone"
+                                required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <a 
+                            href={`/payment?plan=${selectedPlan}&price=${planPrice}`}
+                            class="flex-1 justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Proceed to Payment
+                        </a>
+                        <a 
+                            href="/"
+                            class="flex-1 justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                        >
+                            Back to Home
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<script>
+    // Basic form validation before proceeding to payment
+    const form = document.getElementById('contactForm');
+    const paymentLink = form?.querySelector('a[href^="/payment"]');
+
+    if (form && paymentLink) {
+        paymentLink.addEventListener('click', (e) => {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                form.reportValidity();
+            }
+        });
+    }
+</script>
