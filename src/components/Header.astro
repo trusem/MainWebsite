@@ -11,10 +11,11 @@ const isIndexPage = currentPath === '/';
 
 <header class="py-10">
 	<Container>
+			<img src={logo.src} alt="logo"/>
 			<nav class="relative z-50 flex justify-between">
 				<div class="flex items-center md:gap-x-12">
-					<img src={logo.src} alt="logo" class="absolute left-0 top-0 w-full h-full object-cover opacity-50 -z-10"/>
-					<a href="/" aria-label="Home"></a>
+					
+					<a href="/" aria-label="Home">Home</a>
 					<div class="hidden md:flex gap-x-6">
 						<HeaderLink href="#features">Features</HeaderLink>
 						<HeaderLink href="#testimonials">Testimonials</HeaderLink>
