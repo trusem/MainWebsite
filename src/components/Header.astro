@@ -2,6 +2,7 @@
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
 import Container from './Container.astro';
+import logo from '../assets/Logo.png';
 
 // Get current path to determine if we're on the index page
 const currentPath = Astro.url.pathname;
@@ -12,6 +13,7 @@ const isIndexPage = currentPath === '/';
 	<Container>
 			<nav class="relative z-50 flex justify-between">
 				<div class="flex items-center md:gap-x-12">
+					<img src={logo.png} alt="logo" class="absolute left-0 top-0 w-full h-full object-cover opacity-50 -z-10"/>
 					<a href="/" aria-label="Home"></a>
 					<div class="hidden md:flex gap-x-6">
 						<HeaderLink href="#features">Features</HeaderLink>
